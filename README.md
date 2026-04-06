@@ -2,7 +2,15 @@
 
 ![PRIOR intro preview](./intro.gif)
 
-A free, open-source **cinematic website template** built with GSAP ScrollTrigger. Features canvas-based frame scrubbing, parallax video backgrounds, clip-path reveals, and scroll-driven motion design — all in **vanilla HTML, CSS, and JavaScript**. Zero frameworks. Zero build tools. Just open and go.
+A free, open-source cinematic website template built with GSAP ScrollTrigger and vanilla HTML, CSS, and JavaScript.
+
+It includes a canvas frame-scrub hero, fullscreen video transitions, clip-path reveals, parallax video sections, and a cinematic preloader. No frameworks, no bundlers, no build step.
+
+- GSAP ScrollTrigger animations
+- Canvas frame-by-frame scroll scrubbing
+- Video-led portfolio and agency layout
+- Vanilla HTML, CSS, and JavaScript only
+- Fast to fork, customize, and ship
 
 **Designed by [RelaxKartikey](https://github.com/RelaxKartikey)** | by Entospark Studios
 
