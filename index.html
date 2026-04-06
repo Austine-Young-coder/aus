@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prior — GSAP Animated Scroll Effect Modern Website Template | by Entospark Studios</title>
+  <meta name="description" content="Prior is a free, open-source GSAP ScrollTrigger animated website template featuring canvas frame-scrub, parallax video, clip-path reveals, and cinematic scroll effects. Built with vanilla HTML, CSS & JS. Designed by RelaxKartikey." />
+  <meta name="keywords" content="GSAP template, ScrollTrigger, scroll animation, website template, parallax video, canvas scroll scrub, clip-path animation, modern website, dark theme template, open source, frontend template, HTML CSS JS, motion design, cinematic web, RelaxKartikey, Entospark Studios" />
+  <meta name="author" content="RelaxKartikey — github.com/RelaxKartikey" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://github.com/RelaxKartikey/agency-site" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Prior — GSAP Animated Scroll Effect Modern Website Template" />
+  <meta property="og:description" content="Free open-source template with GSAP ScrollTrigger animations, canvas frame-scrub, parallax video backgrounds, and cinematic scroll effects. Vanilla HTML/CSS/JS — no frameworks, no build tools." />
+  <meta property="og:url" content="https://github.com/RelaxKartikey/agency-site" />
+  <meta property="og:site_name" content="Prior by Entospark Studios" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Prior — GSAP Animated Scroll Effect Modern Website Template" />
+  <meta name="twitter:description" content="Free open-source GSAP ScrollTrigger template. Canvas frame-scrub, parallax video, clip-path reveals. Vanilla HTML/CSS/JS. Designed by RelaxKartikey." />
+
+  <meta name="theme-color" content="#000000" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "Prior — GSAP Animated Scroll Effect Modern Website Template",
+    "description": "A premium, open-source website template with GSAP ScrollTrigger animations, canvas-based frame scrubbing, parallax video backgrounds, clip-path reveals, and cinematic scroll effects. Built with vanilla HTML, CSS, and JavaScript.",
+    "codeRepository": "https://github.com/RelaxKartikey/agency-site",
+    "programmingLanguage": ["HTML", "CSS", "JavaScript"],
+    "runtimePlatform": "Browser",
+    "author": {
+      "@type": "Person",
+      "name": "RelaxKartikey",
+      "url": "https://github.com/RelaxKartikey"
+    },
+    "license": "https://opensource.org/licenses/MIT",
+    "keywords": "GSAP, ScrollTrigger, scroll animation, website template, parallax, canvas scroll scrub, clip-path, motion design"
+  }
+  </script>
+</head>
+<body>
+
+  <div class="preloader" id="preloader">
+    <div class="preloader__inner">
+      <div class="preloader__logo">PRIOR<span class="accent">.</span></div>
+      <div class="preloader__bar-wrap">
+        <div class="preloader__bar" id="preloaderBar"></div>
+      </div>
+      <div class="preloader__counter">
+        <span class="preloader__pct" id="preloaderPct">0</span>
+        <span class="preloader__pct-sign">%</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav__logo">PRIOR<span class="accent">.</span></div>
+    <div class="nav__links">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="https://github.com/RelaxKartikey" target="_blank" rel="noopener" class="nav__cta">Let's Talk</a>
+    </div>
+  </nav>
+
+  <section class="hero" id="hero">
+    <div class="hero__pin">
+      <canvas class="hero__canvas" id="heroCanvas"></canvas>
+      <div class="hero__overlay"></div>
+      <div class="hero__fade-out"></div>
+      <div class="hero__content">
+        <p class="hero__tag">by Entospark Studios</p>
+        <h1 class="hero__heading">
+          <span class="hero__line">We craft brands</span>
+          <span class="hero__line">that move <em>future</em></span>
+        </h1>
+        <p class="hero__sub">Strategy, identity, and motion — designed to leave a mark.</p>
+        <a href="#contact" class="btn">Start a Project <span class="btn__arrow">&rarr;</span></a>
+      </div>
+      <div class="hero__scroll-indicator">
+        <span>Scroll</span>
+        <div class="hero__scroll-line"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="video-transition">
+    <div class="video-transition__inner">
+      <div class="video-transition__frame">
+        <canvas id="vtCanvas" class="video-transition__canvas"></canvas>
+      </div>
+      <div class="video-transition__overlay"></div>
+      <div class="video-transition__text">
+        <span class="vt-word">Design</span>
+        <span class="vt-dot"></span>
+        <span class="vt-word">Strategy</span>
+        <span class="vt-dot"></span>
+        <span class="vt-word">Motion</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="intro" id="work">
+    <div class="intro__video-wrap">
+      <video class="intro__video" muted playsinline autoplay loop>
+        <source src="https://videos.pexels.com/video-files/7547023/7547023-uhd_3840_2160_25fps.mp4" type="video/mp4" />
+      </video>
+      <div class="intro__overlay"></div>
+    </div>
+    <div class="intro__content">
+      <div class="intro__label">
+        <span class="label-line"></span>
+        <span>About Us</span>
+      </div>
+      <h2 class="intro__heading reveal-text">
+        We don't just design brands —<br />
+        we engineer how people <em>feel</em><br />
+        when they encounter one.
+      </h2>
+      <div class="intro__cols">
+        <div class="intro__col reveal-up">
+          <p>Every project begins with deep strategic thinking. We unpack your audience, your market, and your ambition — then distill it into a brand that resonates on every level.</p>
+        </div>
+        <div class="intro__col reveal-up">
+          <p>From identity systems to motion design, we build every touchpoint with obsessive craft. The result is a brand that doesn't just look premium — it <em>moves</em> premium.</p>
+        </div>
+      </div>
+      <div class="intro__stats">
+        <div class="stat reveal-up">
+          <div class="stat__inner">
+            <span class="stat__number">120<span class="stat__plus">+</span></span>
+            <span class="stat__label">Brands Launched</span>
+          </div>
+        </div>
+        <div class="stat reveal-up">
+          <div class="stat__inner">
+            <span class="stat__number">8</span>
+            <span class="stat__label">Years Running</span>
+          </div>
+        </div>
+        <div class="stat reveal-up">
+          <div class="stat__inner">
+            <span class="stat__number">40<span class="stat__plus">+</span></span>
+            <span class="stat__label">Awards Won</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="services" id="services">
+    <div class="services__bg">
+      <video class="services__video" muted playsinline autoplay loop>
+        <source src="https://videos.pexels.com/video-files/32336468/13794791_1920_1080_30fps.mp4" type="video/mp4" />
+      </video>
+      <div class="services__video-overlay"></div>
+    </div>
+    <div class="services__inner">
+      <div class="services__left">
+        <div class="services__sticky">
+          <span class="services__number">01</span>
+          <h2 class="services__title">Services</h2>
+          <p class="services__desc">A full-spectrum creative partnership — from strategy through execution.</p>
+        </div>
+      </div>
+      <div class="services__right">
+        <div class="service-item" data-index="01">
+          <span class="service-item__index">01</span>
+          <div class="service-item__content">
+            <h3>Brand Strategy &amp; Messaging</h3>
+            <p>Positioning, narrative frameworks, and messaging architecture that give your brand a voice worth listening to.</p>
+          </div>
+        </div>
+        <div class="service-item" data-index="02">
+          <span class="service-item__index">02</span>
+          <div class="service-item__content">
+            <h3>Logo Design</h3>
+            <p>Iconic marks engineered for recognition — from wordmarks to complete symbol systems.</p>
+          </div>
+        </div>
+        <div class="service-item" data-index="03">
+          <span class="service-item__index">03</span>
+          <div class="service-item__content">
+            <h3>Visual Identity</h3>
+            <p>Color, type, photography, illustration — a cohesive visual language that scales across every medium.</p>
+          </div>
+        </div>
+        <div class="service-item" data-index="04">
+          <span class="service-item__index">04</span>
+          <div class="service-item__content">
+            <h3>Brand Guidelines &amp; Frameworks</h3>
+            <p>Comprehensive systems and documentation that keep your brand consistent as it grows.</p>
+          </div>
+        </div>
+        <div class="service-item" data-index="05">
+          <span class="service-item__index">05</span>
+          <div class="service-item__content">
+            <h3>Marketing Materials</h3>
+            <p>Campaign assets, social systems, and collateral designed for impact across digital and print.</p>
+          </div>
+        </div>
+        <div class="service-item" data-index="06">
+          <span class="service-item__index">06</span>
+          <div class="service-item__content">
+            <h3>Motion Design</h3>
+            <p>Animated identities, UI motion, and video content that bring your brand to life in motion.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cinematic" id="break">
+    <div class="cinematic__sticky">
+      <div class="cinematic__video-frame">
+        <video class="cinematic__video" muted playsinline autoplay loop>
+          <source src="https://videos.pexels.com/video-files/36619504/15525739_2560_1440_30fps.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <div class="cinematic__overlay"></div>
+      <div class="cinematic__content">
+        <h2 class="cinematic__heading">
+          <span class="cin-line">Every detail.</span>
+          <span class="cin-line">Considered.</span>
+        </h2>
+      </div>
+      <div class="cinematic__counter">
+        <span class="cinematic__count">00</span>
+        <span class="cinematic__count-label">% revealed</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="contact__content">
+      <div class="contact__label">
+        <span class="label-line"></span>
+        <span>Get in Touch</span>
+      </div>
+      <h2 class="contact__heading reveal-text">
+        Have a project<br />in mind?
+      </h2>
+      <a href="mailto:hello@entospark.com" class="contact__email reveal-up">hello@entospark.com</a>
+      <div class="contact__footer">
+        <div class="contact__copy">&copy; 2026 PRIOR by Entospark Studios. All rights reserved.</div>
+        <div class="contact__socials">
+          <a href="https://github.com/RelaxKartikey" target="_blank" rel="noopener">Designed by RelaxKartikey</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
