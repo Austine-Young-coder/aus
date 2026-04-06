@@ -1,6 +1,6 @@
 # PRIOR — GSAP Animated Scroll Effect Modern Website Template
 
-![PRIOR intro preview](./intro.gif)
+![PRIOR intro preview](https://github.com/Relaxkartikey/prior-gsap-animation-portfolio-website-template/blob/main/intro.gif?raw=true)
 
 A free, open-source cinematic website template built with GSAP ScrollTrigger and vanilla HTML, CSS, and JavaScript.
 
