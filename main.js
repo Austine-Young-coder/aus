@@ -1,7 +1,69 @@
 (() => {
   'use strict';
 
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+  const HERO_FRAME_COUNT = 147;
+  const VT_FRAME_COUNT = 168;
+  const HERO_CRITICAL_COUNT = 15;
+  const VT_CRITICAL_COUNT = 15;
+  const FRAME_EVICT_WINDOW = 20;
+
+  let heroFrameSet = null;
+  let vtFrameSet = null;
+
+  function getTier() {
+    return window.matchMedia('(max-width: 768px)').matches ? 'mobile' : 'desktop';
+  }
+
+  function requestIdle(cb) {
+    if (window.requestIdleCallback) return window.requestIdleCallback(cb);
+    return setTimeout(() => cb({ timeRemaining: () => 10 }), 100);
+  }
+
+  function buildFrameArray(folderPrefix, tier, count) {
+    const frames = [];
+    for (let i = 0; i < count; i++) {
+      frames.push(new Image());
+    }
+
+    function srcFor(index) {
+      return `${folderPrefix}_${tier}/ezgif-frame-${String(index + 1).padStart(3, '0')}.jpg`;
+    }
+
+    function load(index) {
+      const img = frames[index];
+      if (img && !img.getAttribute('src')) img.src = srcFor(index);
+    }
+
+    function evictOutsideWindow(centerIndex, windowSize) {
+      const lo = centerIndex - windowSize;
+      const hi = centerIndex + windowSize;
+      for (let i = 0; i < frames.length; i++) {
+        if (i < lo || i > hi) {
+          if (frames[i].getAttribute('src')) frames[i].removeAttribute('src');
+        } else {
+          load(i);
+        }
+      }
+    }
+
+    function loadRemainingIdle(fromIndex) {
+      let nextIndex = fromIndex;
+      function step(deadline) {
+        let processed = 0;
+        while (nextIndex < frames.length && (deadline.timeRemaining() > 0 || processed < 2)) {
+          load(nextIndex);
+          nextIndex++;
+          processed++;
+        }
+        if (nextIndex < frames.length) requestIdle(step);
+      }
+      requestIdle(step);
+    }
+
+    return { frames, load, evictOutsideWindow, loadRemainingIdle };
+  }
 
   function scrubVideo(videoEl, triggerEl, startPos, endPos) {
     if (!videoEl) return;
@@ -33,21 +95,19 @@
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    const FRAME_COUNT = 147;
-    const frames = [];
-    let loadedCount = 0;
+    const frameSet = heroFrameSet || buildFrameArray('frames_1', getTier(), HERO_FRAME_COUNT);
+    const frames = frameSet.frames;
     let currentFrame = 0;
 
-    for (let i = 1; i <= FRAME_COUNT; i++) {
-      const img = new Image();
-      img.src = `frames_1/ezgif-frame-${String(i).padStart(3, '0')}.jpg`;
-      img.onload = () => { loadedCount++; };
-      frames.push(img);
-    }
+    frameSet.loadRemainingIdle(HERO_CRITICAL_COUNT);
 
     function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       drawFrame(currentFrame);
     }
 
@@ -55,8 +115,8 @@
       const img = frames[index];
       if (!img || !img.complete || !img.naturalWidth) return;
 
-      const cw = canvas.width;
-      const ch = canvas.height;
+      const cw = canvas.clientWidth;
+      const ch = canvas.clientHeight;
       const iw = img.naturalWidth;
       const ih = img.naturalHeight;
 
@@ -108,7 +168,7 @@
 
     const frameObj = { frame: 0 };
     gsap.to(frameObj, {
-      frame: FRAME_COUNT - 1,
+      frame: HERO_FRAME_COUNT - 1,
       ease: 'none',
       snap: 'frame',
       scrollTrigger: {
@@ -122,6 +182,7 @@
         if (idx !== currentFrame) {
           currentFrame = idx;
           drawFrame(currentFrame);
+          frameSet.evictOutsideWindow(currentFrame, FRAME_EVICT_WINDOW);
         }
       },
     });
@@ -173,23 +234,24 @@
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    const VT_FRAME_COUNT = 168;
-    const vtFrames = [];
-    let vtLoadedCount = 0;
+    vtFrameSet = buildFrameArray('frames_2', getTier(), VT_FRAME_COUNT);
+    const vtFrames = vtFrameSet.frames;
     let vtCurrentFrame = 0;
 
-    for (let i = 1; i <= VT_FRAME_COUNT; i++) {
-      const img = new Image();
-      img.src = `frames_2/ezgif-frame-${String(i).padStart(3, '0')}.jpg`;
-      img.onload = () => {
-        vtLoadedCount++;
-        if (vtLoadedCount === 1) {
-          canvas.width = img.naturalWidth;
-          canvas.height = img.naturalHeight;
-          drawVtFrame(0);
-        }
-      };
-      vtFrames.push(img);
+    const vtCriticalCount = Math.min(VT_CRITICAL_COUNT, VT_FRAME_COUNT);
+    for (let i = 0; i < vtCriticalCount; i++) {
+      vtFrameSet.load(i);
+    }
+    vtFrameSet.loadRemainingIdle(vtCriticalCount);
+
+    function resizeVtCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawVtFrame(vtCurrentFrame);
     }
 
     function drawVtFrame(index) {
@@ -197,10 +259,31 @@
       const img = vtFrames[index];
       if (!img.complete || !img.naturalWidth) return;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const cw = canvas.clientWidth;
+      const ch = canvas.clientHeight;
+      const iw = img.naturalWidth;
+      const ih = img.naturalHeight;
+
+      const scale = Math.max(cw / iw, ch / ih);
+      const dw = iw * scale;
+      const dh = ih * scale;
+      const dx = (cw - dw) / 2;
+      const dy = (ch - dh) / 2;
+
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.drawImage(img, dx, dy, dw, dh);
       vtCurrentFrame = index;
     }
+
+    window.addEventListener('resize', resizeVtCanvas);
+    resizeVtCanvas();
+
+    const waitForVtFirst = setInterval(() => {
+      if (vtFrames[0] && vtFrames[0].complete) {
+        clearInterval(waitForVtFirst);
+        drawVtFrame(0);
+      }
+    }, 50);
 
     const vtScrub = { frame: 0 };
 
@@ -215,9 +298,13 @@
         scrub: 0.6,
       },
       onUpdate: () => {
-        drawVtFrame(Math.round(vtScrub.frame));
+        const idx = Math.round(vtScrub.frame);
+        drawVtFrame(idx);
+        vtFrameSet.evictOutsideWindow(idx, FRAME_EVICT_WINDOW);
       },
     });
+
+    const isLowEnd = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -233,13 +320,17 @@
       { clipPath: 'inset(30% 25% 30% 25% round 20px)' },
       { clipPath: 'inset(0% 0% 0% 0% round 0px)', duration: 1, ease: 'none' },
       0
-    )
-    .fromTo('#vtCanvas',
-      { scale: 1.3 },
-      { scale: 1, duration: 1, ease: 'none' },
-      0
-    )
-    .to('.video-transition__overlay', {
+    );
+
+    if (!isLowEnd) {
+      tl.fromTo('#vtCanvas',
+        { scale: 1.3 },
+        { scale: 1, duration: 1, ease: 'none' },
+        0
+      );
+    }
+
+    tl.to('.video-transition__overlay', {
       opacity: 0.15,
       duration: 0.6,
       ease: 'none',
@@ -379,7 +470,9 @@
     const lines = section.querySelectorAll('.cin-line');
 
     if (cinVideo) {
-      cinVideo.play().catch(() => {});
+      cinVideo.play().catch(() => {
+        section.classList.add('video-failed');
+      });
     }
 
     const tl = gsap.timeline({
@@ -466,11 +559,16 @@
         start: 'top bottom+=400',
         once: true,
         onEnter: () => {
+          const conn = navigator.connection;
+          const saveData = !!(conn && (conn.saveData || /2g/.test(conn.effectiveType || '')));
+          if (saveData) return;
+
           const sources = video.querySelectorAll('source[data-src]');
           sources.forEach(source => {
             source.src = source.dataset.src;
             source.removeAttribute('data-src');
           });
+          video.addEventListener('loadedmetadata', () => ScrollTrigger.refresh(), { once: true });
           video.load();
         },
       });
@@ -534,20 +632,12 @@
 
     const resources = [];
 
-    const HERO_FRAMES = 147;
-    for (let i = 1; i <= HERO_FRAMES; i++) {
-      const img = new Image();
-      img.src = `frames_1/ezgif-frame-${String(i).padStart(3, '0')}.jpg`;
+    heroFrameSet = buildFrameArray('frames_1', getTier(), HERO_FRAME_COUNT);
+    const criticalCount = Math.min(HERO_CRITICAL_COUNT, HERO_FRAME_COUNT);
+    for (let i = 0; i < criticalCount; i++) {
+      heroFrameSet.load(i);
       total++;
-      resources.push({ type: 'image', el: img });
-    }
-
-    const VT_FRAMES = 168;
-    for (let i = 1; i <= VT_FRAMES; i++) {
-      const img = new Image();
-      img.src = `frames_2/ezgif-frame-${String(i).padStart(3, '0')}.jpg`;
-      total++;
-      resources.push({ type: 'image', el: img });
+      resources.push({ type: 'image', el: heroFrameSet.frames[i] });
     }
 
     document.querySelectorAll('video').forEach(v => {
@@ -663,7 +753,7 @@
       initCinematic();
       initContact();
       initLazyVideos();
-      initSmoothAnchors();
+      requestIdle(() => initSmoothAnchors());
     });
   }
 

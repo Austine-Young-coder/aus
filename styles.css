@@ -697,6 +697,14 @@ video {
   object-fit: cover;
 }
 
+.cinematic.video-failed .cinematic__video {
+  opacity: 0;
+}
+
+.cinematic.video-failed .cinematic__video-frame {
+  background: linear-gradient(135deg, var(--gray-900) 0%, var(--black) 100%);
+}
+
 .cinematic__overlay {
   position: absolute;
   inset: 0;
