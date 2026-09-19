@@ -14,7 +14,7 @@
   --gray-500: #666666;
   --gray-700: #333333;
   --gray-900: #111111;
-  --accent: #c8102e;
+  --accent: #830062;
 
   --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --tracking-tight: -0.04em;
@@ -140,10 +140,28 @@ video {
   text-transform: uppercase;
 }
 
-.accent {
-  color: var(--accent);
+a.disabled {
+cursor: not-allowed;
+opacity: 0.5;
+pointer-events: none;
 }
 
+.accent {
+  color: var(--accent) var(--);
+}
+
+.accent img {
+  width: 2rem;
+  height: 1.5rem;
+}
+.accenti{
+color: var(--accent) var(--);
+}
+
+.accenti img {
+width: 3.5rem;
+  height: 3rem;
+}
 .nav__links {
   display: flex;
   align-items: center;
@@ -731,6 +749,7 @@ video {
   display: block;
   opacity: 0;
   will-change: transform, opacity;
+  color: #111111;
 }
 
 .cinematic__counter {
@@ -755,6 +774,7 @@ video {
   font-size: 0.6875rem;
   font-weight: 500;
   color: var(--gray-300);
+  mix-blend-mode: normal;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
